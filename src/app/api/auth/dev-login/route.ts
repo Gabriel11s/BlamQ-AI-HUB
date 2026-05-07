@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { createSession, upsertLocation } from "@/lib/auth/sso";
 
 const DEV_LOCATION_ID = "dWzIwfxbFny2t38NN9uG";
-const DEV_COMPANY_ID = "dev-company";
+const DEV_COMPANY_ID = "6ZomOpLfyGxwkeKevWEC";
 const DEV_USER_ID = "dev-user";
-const DEV_LOCATION_NAME = "Dev Location (Matrix AI Hub)";
+const DEV_LOCATION_NAME = "Spark Leads";
 
 export async function POST() {
   if (process.env.NEXT_PUBLIC_DEV_MODE !== "true") {

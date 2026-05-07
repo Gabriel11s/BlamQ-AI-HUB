@@ -3,7 +3,7 @@ import { getSession } from "@/lib/auth/sso";
 import { createServerClient } from "@/lib/supabase/server";
 
 // GET /api/settings
-export async function GET() {
+export async function GET(request: NextRequest) {
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "Nao autenticado" }, { status: 401 });
@@ -26,9 +26,15 @@ export async function GET() {
     has_custom_key: !!settings.openai_api_key,
   } : null;
 
+  // Derivar a URL pública a partir do host do request para evitar
+  // hardcode de domínio (sobrevive a rebrand, custom domain, preview, etc).
+  const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || request.nextUrl.host;
+  const proto = request.headers.get("x-forwarded-proto") || request.nextUrl.protocol.replace(":", "") || "https";
+  const baseUrl = `${proto}://${host}`;
+
   return NextResponse.json({
     settings: masked,
-    webhook_url: `https://spark-ai-platform.vercel.app/api/webhooks/inbound-message`,
+    webhook_url: `${baseUrl}/api/webhooks/inbound-message`,
     location_id: session.locationId,
   });
 }
