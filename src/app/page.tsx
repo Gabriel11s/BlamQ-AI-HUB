@@ -70,14 +70,22 @@ function SSOHandler() {
   );
 
   useEffect(() => {
-    const COMPANY_ID = process.env.NEXT_PUBLIC_GHL_COMPANY_ID || "";
+    // Fallback de companyId via env publica — usado SO se o GHL nao enviar
+    // o companyId via query param/postMessage (caso raro).
+    const FALLBACK_COMPANY_ID = process.env.NEXT_PUBLIC_GHL_COMPANY_ID || "";
 
-    // 1. Tentar via query params (ex: ?user_id=X&location_id=Z)
+    // 1. Tentar via query params (ex: ?user_id=X&company_id=Y&location_id=Z)
     const userId = searchParams.get("user_id") || searchParams.get("userId");
+    const companyIdParam = searchParams.get("company_id") || searchParams.get("companyId");
     const locationId = searchParams.get("location_id") || searchParams.get("locationId");
 
     if (userId && locationId) {
-      authenticate(userId, COMPANY_ID, locationId);
+      const cid = companyIdParam || FALLBACK_COMPANY_ID;
+      if (!cid) {
+        setError("company_id ausente. Configure NEXT_PUBLIC_GHL_COMPANY_ID ou inclua &company_id={{company.id}} na URL do Custom Menu Link.");
+        return;
+      }
+      authenticate(userId, cid, locationId);
       return;
     }
 
@@ -90,9 +98,15 @@ function SSOHandler() {
 
       const uid = data.userId || data.user_id || data.activeUser?.id;
       const lid = data.locationId || data.location_id || data.activeLocation;
+      const cid =
+        data.companyId ||
+        data.company_id ||
+        data.activeCompany ||
+        data.companyId?.toString?.() ||
+        FALLBACK_COMPANY_ID;
 
-      if (uid && lid) {
-        authenticate(uid, COMPANY_ID, lid);
+      if (uid && lid && cid) {
+        authenticate(uid, cid, lid);
       }
     }
 
@@ -111,7 +125,7 @@ function SSOHandler() {
         setError(
           "Não foi possível obter os dados de autenticação. Verifique se a URL do Custom Menu Link está configurada como: " +
           window.location.origin +
-          "/?user_id={{user.id}}&location_id={{location.id}}"
+          "/?user_id={{user.id}}&company_id={{company.id}}&location_id={{location.id}}"
         );
       }
     }, 8000);
