@@ -3,6 +3,7 @@
 import { Mail, Phone } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils/cn";
+import { useTenant } from "@/hooks/use-tenant";
 import type { CommunicationChannel } from "@/types/agent";
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -21,25 +22,26 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-const CHANNELS: {
-  value: CommunicationChannel;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  description: string;
-  color: string;
-}[] = [
-  { value: "SMS", label: "SMS", icon: Phone, description: "SMS via número do Spark", color: "text-gray-600" },
-  { value: "WhatsApp", label: "WhatsApp API", icon: WhatsAppIcon, description: "WhatsApp Business API", color: "text-[#25D366]" },
-  { value: "Instagram", label: "Instagram", icon: InstagramIcon, description: "Direct Messages", color: "text-[#E4405F]" },
-  { value: "Email", label: "Email", icon: Mail, description: "Email", color: "text-gray-600" },
-];
-
 interface ChannelSelectorProps {
   selected: CommunicationChannel[];
   onChange: (channels: CommunicationChannel[]) => void;
 }
 
 export function ChannelSelector({ selected, onChange }: ChannelSelectorProps) {
+  const { locationName } = useTenant();
+  const CHANNELS: {
+    value: CommunicationChannel;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    description: string;
+    color: string;
+  }[] = [
+    { value: "SMS", label: "SMS", icon: Phone, description: `SMS via número do ${locationName}`, color: "text-gray-600" },
+    { value: "WhatsApp", label: "WhatsApp API", icon: WhatsAppIcon, description: "WhatsApp Business API", color: "text-[#25D366]" },
+    { value: "Instagram", label: "Instagram", icon: InstagramIcon, description: "Direct Messages", color: "text-[#E4405F]" },
+    { value: "Email", label: "Email", icon: Mail, description: "Email", color: "text-gray-600" },
+  ];
+
   const toggle = (channel: CommunicationChannel) => {
     if (selected.includes(channel)) {
       if (selected.length <= 1) return;

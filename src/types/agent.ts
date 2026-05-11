@@ -68,7 +68,7 @@ export interface PostBookingConfig {
 export type AgentIdentityMode = "assistant" | "human";
 
 export interface AgentPersonality {
-  name: string;                    // Nome da IA (ex: "Ana", "Spark")
+  name: string;                    // Nome da IA (ex: "Ana", "Bruno")
   identity_mode: AgentIdentityMode; // Se apresenta como assistente virtual ou humano
   greeting_style: string;          // Como cumprimenta (ex: "Oi {name}!", "Ola, tudo bem?")
   farewell_style: string;          // Como se despede

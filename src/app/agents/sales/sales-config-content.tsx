@@ -32,6 +32,7 @@ import { KnowledgeBaseEditor } from "@/components/agents/sales/knowledge-base-ed
 import { DeactivationRulesEditor } from "@/components/agents/sales/deactivation-rules-editor";
 import { MediaFeaturesEditor } from "@/components/agents/sales/media-features-editor";
 import { useGHLData } from "@/hooks/use-ghl-data";
+import { useTenant } from "@/hooks/use-tenant";
 import { AI_MODELS, CONVERSATION_TEMPLATES } from "@/lib/utils/constants";
 import type { AgentConfig, AgentObjective, AgentPersonality, PostBookingConfig, DataField, FollowUpConfig, TargetingRule, WorkingHoursConfig, TimezoneConfig, NotificationsConfig, AutomationRule, DeactivationRule, CommunicationChannel } from "@/types/agent";
 
@@ -130,6 +131,7 @@ export function SalesConfigContent() {
   const isDirty = JSON.stringify(config) !== JSON.stringify(savedConfig);
 
   const ghl = useGHLData();
+  const { locationName } = useTenant();
 
   const fetchConfig = useCallback(async () => {
     if (!agentId) {
@@ -385,7 +387,7 @@ export function SalesConfigContent() {
                 <CardTitle>Dados para coletar</CardTitle>
                 <CardDescription>
                   Configure quais informações o agente deve coletar. Campos vinculados
-                  a Custom Fields são atualizados automaticamente no Spark.
+                  a Custom Fields são atualizados automaticamente no {locationName}.
                 </CardDescription>
               </CardHeader>
               <CardContent>

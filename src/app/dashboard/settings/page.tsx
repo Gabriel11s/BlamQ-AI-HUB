@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTenant } from "@/hooks/use-tenant";
 
 const TIMEZONES = [
   { value: "America/New_York", label: "Eastern (ET)" },
@@ -28,6 +29,7 @@ interface Settings {
 }
 
 export default function SettingsPage() {
+  const { locationName } = useTenant();
   const [settings, setSettings] = useState<Settings>({
     openai_api_key: null,
     has_custom_key: false,
@@ -128,7 +130,7 @@ export default function SettingsPage() {
               Webhook
             </CardTitle>
             <CardDescription>
-              URL para configurar no aplicativo do Spark para receber mensagens
+              URL para configurar no {locationName} para receber mensagens
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">

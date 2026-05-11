@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { composePersonalityProfile, type PersonalityProfile } from "@/lib/ai/behavior-blocks";
+import { useTenant } from "@/hooks/use-tenant";
 import type { AIResponse } from "@/types/ai";
 
 interface ChatMessage {
@@ -42,6 +43,7 @@ interface AgentTesterProps {
 }
 
 export function AgentTester({ agentId }: AgentTesterProps) {
+  const { locationName } = useTenant();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -693,8 +695,8 @@ export function AgentTester({ agentId }: AgentTesterProps) {
                 </Label>
                 <p className="text-xs text-gray-500 mt-0.5">
                   {executeActions
-                    ? "As ações serão executadas de verdade no Spark (enviar mensagem, agendar, atualizar campos, tags)"
-                    : "Modo simulação — nenhuma ação será executada no Spark"}
+                    ? `As ações serão executadas de verdade no ${locationName} (enviar mensagem, agendar, atualizar campos, tags)`
+                    : `Modo simulação — nenhuma ação será executada no ${locationName}`}
                 </p>
               </div>
             </div>
@@ -717,7 +719,7 @@ export function AgentTester({ agentId }: AgentTesterProps) {
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
               <span>
                 Atenção: com ações reais ativadas, o agente vai enviar mensagens,
-                agendar reuniões e atualizar dados do contato no Spark.
+                agendar reuniões e atualizar dados do contato no {locationName}.
               </span>
             </div>
           )}

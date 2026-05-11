@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { useTenant } from "@/hooks/use-tenant";
 import type { HandoffMessage } from "@/types/agent";
 
 interface HandoffMessagesEditorProps {
@@ -16,6 +17,7 @@ interface HandoffMessagesEditorProps {
 }
 
 export function HandoffMessagesEditor({ messages, onChange }: HandoffMessagesEditorProps) {
+  const { locationName } = useTenant();
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftLabel, setDraftLabel] = useState("");
@@ -78,8 +80,8 @@ export function HandoffMessagesEditor({ messages, onChange }: HandoffMessagesEdi
   return (
     <div className="space-y-4">
       <p className="text-xs text-gray-400">
-        Cadastre mensagens prontas que você envia manualmente ao cliente (pelo Spark
-        ou pelo GHL) para encerrar o atendimento da IA. Quando a mensagem cadastrada
+        Cadastre mensagens prontas que você envia manualmente ao cliente (pelo {locationName})
+        para encerrar o atendimento da IA. Quando a mensagem cadastrada
         aqui for detectada no envio saindo, a IA pausa automaticamente para aquele
         contato específico — outros contatos continuam sendo atendidos normalmente.
       </p>

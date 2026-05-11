@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTenant } from "@/hooks/use-tenant";
 import type { DataField } from "@/types/agent";
 
 interface GHLCustomField {
@@ -35,6 +36,7 @@ export function DataFieldsEditor({
   customFields,
   onChange,
 }: DataFieldsEditorProps) {
+  const { locationName } = useTenant();
   const [showAddForm, setShowAddForm] = useState(false);
   const [addMode, setAddMode] = useState<"custom_field" | "simple" | null>(null);
   const [newField, setNewField] = useState<DataField>({
@@ -215,7 +217,7 @@ export function DataFieldsEditor({
                 <Database className="w-5 h-5 text-gray-700" />
                 <span className="text-sm font-medium">Custom Field</span>
                 <span className="text-xs text-gray-500 text-center">
-                  Vincula a um campo do Spark e atualiza automaticamente
+                  Vincula a um campo do {locationName} e atualiza automaticamente
                 </span>
               </button>
               <button

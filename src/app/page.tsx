@@ -90,7 +90,7 @@ function SSOHandler() {
     }
 
     // 2. Escutar postMessage do GHL (Custom Menu Link envia dados via iframe postMessage)
-    setStatus("Aguardando dados do Spark...");
+    setStatus("Aguardando dados...");
 
     function handleMessage(event: MessageEvent) {
       const data = event.data;

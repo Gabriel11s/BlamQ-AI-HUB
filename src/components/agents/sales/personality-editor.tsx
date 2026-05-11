@@ -27,7 +27,7 @@ export function PersonalityEditor({ personality, onChange }: PersonalityEditorPr
           <Input
             value={personality.name}
             onChange={(e) => update("name", e.target.value)}
-            placeholder="Ex: Ana, Spark, Julia"
+            placeholder="Ex: Ana, Bruno, Julia"
             className="mt-1.5"
           />
           <p className="text-xs text-gray-500 mt-1">
