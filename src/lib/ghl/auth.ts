@@ -6,6 +6,26 @@ import type { GHLTokenResponse } from "@/types/ghl";
 const tokenCache = new Map<string, { token: string; expiresAt: number }>();
 
 /**
+ * Le PITs por location de uma env var em formato JSON:
+ *   GHL_LOCATION_PITS='{"locationId1":"pit-xxx","locationId2":"pit-yyy"}'
+ *
+ * Quando setada, o getLocationToken usa o PIT direto e ignora todo o
+ * fluxo OAuth Marketplace (Token Refresher table, /oauth/locationToken).
+ * Tem prioridade sobre o OAuth — se o PIT existe pra essa location, usa.
+ */
+function getPitForLocation(locationId: string): string | null {
+  const raw = process.env.GHL_LOCATION_PITS;
+  if (!raw) return null;
+  try {
+    const map = JSON.parse(raw) as Record<string, string>;
+    return map[locationId] || null;
+  } catch (err) {
+    console.error("[GHL Auth] GHL_LOCATION_PITS nao e JSON valido:", err);
+    return null;
+  }
+}
+
+/**
  * Busca o company token no Supabase (Token Refresher table)
  */
 export async function getCompanyToken(companyId: string): Promise<{
@@ -31,12 +51,20 @@ export async function getCompanyToken(companyId: string): Promise<{
 }
 
 /**
- * Gera um location token a partir do company token
+ * Gera um location token a partir do company token.
+ *
+ * Se houver PIT setado para a location em GHL_LOCATION_PITS, usa direto
+ * (vida util ~12 meses, sem precisar refresh). Senao, faz o fluxo OAuth
+ * Marketplace: company token (Token Refresher table) -> /oauth/locationToken.
  */
 export async function getLocationToken(
   companyId: string,
   locationId: string
 ): Promise<string> {
+  // PIT tem prioridade — bypass total do OAuth quando configurado
+  const pit = getPitForLocation(locationId);
+  if (pit) return pit;
+
   // Verificar cache
   const cacheKey = `${companyId}:${locationId}`;
   const cached = tokenCache.get(cacheKey);
